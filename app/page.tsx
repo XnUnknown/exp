@@ -18,7 +18,7 @@ export default function Dashboard() {
   // Fetch expenses
   const fetchExpenses = async () => {
     const params = new URLSearchParams(filter as any).toString();
-    const res = await fetch(`/api/expense?${params}`);
+    const res = await fetch(`/api/expense?₹{params}`);
     const data = await res.json();
     setExpenses(data.expenses);
     setTotal(data.total);
@@ -139,7 +139,7 @@ export default function Dashboard() {
         <section>
           <div className="bg-white border border-green-300 dark:border-green-700 rounded-2xl p-6 shadow-xl dark:bg-gradient-to-br dark:from-gray-900 dark:to-green-950">
             <h2 className="text-xl font-semibold mb-4">Expenses</h2>
-            <div className="mb-4 text-lg font-medium">Total: <span className="text-green-600">${total}</span></div>
+            <div className="mb-4 text-lg font-medium">Total: <span className="text-green-600">₹{total}</span></div>
             <table className="w-full border border-green-200 rounded overflow-hidden">
               <thead className="bg-green-100">
                 <tr>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                   expenses.map(exp => (
                     <tr key={exp.id} className="border-t border-green-100">
                       <td className="py-2 px-4">{exp.title}</td>
-                      <td className="py-2 px-4">${exp.amount}</td>
+                      <td className="py-2 px-4">₹{exp.amount}</td>
                       <td className="py-2 px-4">{exp.name}</td>
                       <td className="py-2 px-4">{new Date(exp.createdAt).toLocaleString()}</td>
                       <td className="py-2 px-4">
