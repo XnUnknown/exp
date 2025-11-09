@@ -29,25 +29,47 @@ export async function GET(req: NextRequest) {
   const { period, minAmount, name } = Object.fromEntries(req.nextUrl.searchParams);
   let where: Record<string, any> = {};
 
-  if (minAmount) where.amount = { gte: Number(minAmount) };
-  if (name) where.name = name;
-
-  if (period) {
-    const now = new Date();
-    let start: Date | undefined;
-    if (period === 'monthly') {
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (period === 'weekly') {
-      const day = now.getDay();
-      start = new Date(now);
-      start.setDate(now.getDate() - day);
-    }
-    if (start) {
-      where.createdAt = { gte: start };
-    }
+  // Filter by minimum amount
+  if (minAmount && !isNaN(Number(minAmount))) {
+    where.amount = { gte: Number(minAmount) };
   }
 
-  const expenses = await prisma.expense.findMany({ where });
+  // Filter by name (exact match for now, as Neon DB might not support case-insensitive search)
+  if (name && name.trim() !== '') {
+    where.name = name.trim();
+  }
+
+  // Filter by period
+  if (period) {
+    const now = new Date();
+    let start: Date;
+    
+    switch (period) {
+      case 'monthly':
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case 'weekly':
+        const firstDayOfWeek = new Date(now);
+        const day = now.getDay();
+        firstDayOfWeek.setDate(now.getDate() - day);
+        firstDayOfWeek.setHours(0, 0, 0, 0);
+        start = firstDayOfWeek;
+        break;
+      default:
+        start = new Date(0); // Show all if period is invalid
+    }
+
+    where.createdAt = { gte: start };
+  }
+
+  // Get filtered expenses, sorted by date
+  const expenses = await prisma.expense.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+  });
+
+  // Calculate total
   const total = expenses.reduce((sum: number, e: { amount: number }) => sum + e.amount, 0);
+  
   return NextResponse.json({ expenses, total });
 }

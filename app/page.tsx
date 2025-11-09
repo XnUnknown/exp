@@ -17,8 +17,12 @@ export default function Dashboard() {
 
   // Fetch expenses
   const fetchExpenses = async () => {
-    const params = new URLSearchParams(filter as any).toString();
-    const res = await fetch(`/api/expense?₹{params}`);
+    const params = new URLSearchParams();
+    if (filter.period) params.set('period', filter.period);
+    if (filter.minAmount) params.set('minAmount', filter.minAmount);
+    if (filter.name) params.set('name', filter.name);
+    
+    const res = await fetch(`/api/expense?${params.toString()}`);
     const data = await res.json();
     setExpenses(data.expenses);
     setTotal(data.total);
