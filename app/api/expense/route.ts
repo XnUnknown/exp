@@ -1,13 +1,18 @@
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
 // Add a new expense
 export async function POST(req: NextRequest) {
-  const { title, amount, name } = await req.json();
+  const data = await req.json();
   const expense = await prisma.expense.create({
-    data: { title, amount, name },
+    data: {
+      title: data.title,
+      amount: Number(data.amount),
+      name: data.name,
+      createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+    },
   });
   return NextResponse.json(expense);
 }

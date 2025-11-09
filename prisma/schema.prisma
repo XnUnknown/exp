@@ -18,6 +18,6 @@ model Expense {
   id        Int      @id @default(autoincrement())
   title     String
   amount    Float
-  createdAt DateTime @default(now())
+  createdAt DateTime
   name      String
 }

@@ -12,7 +12,7 @@ type Expense = {
 export default function Dashboard() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [total, setTotal] = useState(0);
-  const [form, setForm] = useState({ title: "", amount: "", name: "" });
+  const [form, setForm] = useState({ title: "", amount: "", name: "", date: "" });
   const [filter, setFilter] = useState({ period: "", minAmount: "", name: "" });
 
   // Fetch expenses
@@ -39,9 +39,10 @@ export default function Dashboard() {
         title: form.title,
         amount: Number(form.amount),
         name: form.name,
+        createdAt: form.date ? new Date(form.date).toISOString() : undefined,
       }),
     });
-    setForm({ title: "", amount: "", name: "" });
+    setForm({ title: "", amount: "", name: "", date: "" });
     fetchExpenses();
   };
 
@@ -89,6 +90,12 @@ export default function Dashboard() {
                 value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
                 required
+              />
+              <input
+                type="date"
+                className="border border-green-300 rounded px-3 py-2 w-full md:w-1/4 focus:outline-none focus:ring-2 focus:ring-green-200"
+                value={form.date}
+                onChange={e => setForm({ ...form, date: e.target.value })}
               />
               <button
                 type="submit"
