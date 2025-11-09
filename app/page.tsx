@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Expense = {
   id: number;
@@ -10,6 +11,7 @@ type Expense = {
 };
 
 export default function Dashboard() {
+  const router = useRouter();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [total, setTotal] = useState(0);
   const [form, setForm] = useState({ title: "", amount: "", name: "", date: "" });
@@ -143,6 +145,13 @@ export default function Dashboard() {
                 onClick={() => setFilter({ period: "", minAmount: "", name: "" })}
               >
                 Reset
+              </button>
+              <button
+                type="button"
+                className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 shadow"
+                onClick={() => router.push('/dashboard')}
+              >
+                View Analytics
               </button>
             </div>
           </div>
