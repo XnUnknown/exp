@@ -121,7 +121,7 @@ export default function ExpenseDashboard() {
             >
               <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400">{stat.label}</h3>
               <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                ${stat.value.toFixed(2)}
+                ₹{stat.value.toFixed(2)}
               </p>
             </div>
           ))}
